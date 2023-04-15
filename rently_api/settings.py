@@ -49,11 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'rest_framework',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_simplejwt.token_blacklist',
     'properties',
-    'jwt_auth',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +102,15 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (RENDERER_CLASSES),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.github.GithubOAuth2',
+)
+
+SOCIAL_AUTH_GITHUB_KEY = 'your_github_client_id'
+SOCIAL_AUTH_GITHUB_SECRET = 'your_github_client_secret'
+SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':

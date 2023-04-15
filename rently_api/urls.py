@@ -25,10 +25,10 @@ def readiness(*args, **kwargs):
 
 
 urlpatterns = [
-    path('api/v1/properties', include('properties.urls')),
-    path('api/token', include('jwt_auth.urls')),
+    path('api/v1/', include('properties.urls')),
+    path('api/auth/', include('authentication.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('healthz/', healthz),
-    path('readiness/', readiness),
+    path('healthz', healthz),
+    path('readiness', readiness),
 ]

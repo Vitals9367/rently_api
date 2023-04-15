@@ -5,49 +5,50 @@ from properties.models import Property
 from properties.serializers import PropertySerializer
 from .utils import get_test_resource
 
-
 test_properties = get_test_resource('properties')
 
 
 @mark.django_db
-def test_post_property(client, authenticated_user):
-    url = reverse('property-list')
-    user, jwt_token = authenticated_user
+def test_create_property(client, authenticated_test_user):
+    user, access_token, refresh_token = authenticated_test_user
+    url = reverse('properties-list')
+    auth_header = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
 
+    def assert_property_response(response, expected_data, expected_status):
+        assert response.data['title'] == expected_data['title']
+        assert response.data['description'] == expected_data['description']
+        assert response.data['rent'] == expected_data['rent']
+        assert response.status_code == expected_status
+
+    def create_property(auth_header, data):
+        client.credentials(**auth_header)
+        return client.post(url, data)
+
+    # Verify that no properties exist initially
     response = client.get(url)
-
-    # No properties first
     assert response.data == []
     assert response.status_code == status.HTTP_200_OK
 
-    # Create property with random jwt token
-    client.credentials(HTTP_AUTHORIZATION='Bearer some-random-token-54as4dasd6asd')
-    response = client.post(url, test_properties[0])
+    # Create a property with invalid token
+    response = create_property({'HTTP_AUTHORIZATION': 'Bearer some-random-token-54as4dasd6asd'}, test_properties[0])
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    # Create property with proper jwt token
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {jwt_token}')
-    response = client.post(url, test_properties[0])
-
-    # Newly created property returned
-    assert response.data['title'] == test_properties[0]['title']
-    assert response.data['description'] == test_properties[0]['description']
-    assert response.data['rent'] == test_properties[0]['rent']
-    assert response.status_code == status.HTTP_201_CREATED
+    # Create a property with valid token
+    response = create_property(auth_header, test_properties[0])
+    assert_property_response(response, test_properties[0], status.HTTP_201_CREATED)
 
 
 @mark.django_db
-def test_delete_property(client, authenticated_user):
-    user, jwt_token = authenticated_user
+def test_delete_property(client, authenticated_test_user):
+    user, access_token, refresh_token = authenticated_test_user
 
     property = Property.objects.create(**test_properties[0], owner=user)
     serializer = PropertySerializer(property)
 
-    url = reverse('property-detail-view', kwargs={'id': property.id})
+    url = reverse('properties-detail', kwargs={'pk': str(property.id)})
 
+    # Assert that the property exists
     response = client.get(url)
-
-    # Property exists
     assert response.data == serializer.data
     assert response.status_code == status.HTTP_200_OK
 
@@ -56,25 +57,27 @@ def test_delete_property(client, authenticated_user):
     response = client.delete(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    # Try to delete with JWT token
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {jwt_token}')
+    # Delete with JWT token
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
     response = client.delete(url)
+
+    # Assert that the property is deleted
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    # Property not found
+    # Assert that the property is not found
     response = client.get(url)
     assert response.data == {"detail": "Not found."}
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @mark.django_db
-def test_update_property(client, authenticated_user):
-    user, jwt_token = authenticated_user
+def test_update_property(client, authenticated_test_user):
+    user, access_token, refresh_token = authenticated_test_user
 
     property = Property.objects.create(**test_properties[0], owner=user)
     serializer = PropertySerializer(property)
 
-    url = reverse('property-detail-view', kwargs={'id': property.id})
+    url = reverse('properties-detail', kwargs={'pk': str(property.id)})
     response = client.get(url)
 
     # Property exists
@@ -95,11 +98,10 @@ def test_update_property(client, authenticated_user):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     # Try with JWT token
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {jwt_token}')
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
     response = client.put(url, {**test_properties[0], **updated_data})
 
     # Checks if data was updated
-    assert response.data == {**serializer.data, **updated_data, 'updated_at': response.data['updated_at']}
-    # Checks if updated_at timestamp is different
-    assert serializer.data['updated_at'] != response.data['updated_at']
+    updated_property = Property.objects.get(id=property.id)
+    assert response.data == PropertySerializer(updated_property).data
     assert response.status_code == status.HTTP_200_OK
