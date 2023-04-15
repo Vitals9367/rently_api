@@ -1,0 +1,30 @@
+[
+    {
+        "name": "asdasd",
+        "address": "asdasd",
+        "city": "asdasd",
+        "state": "asdasd",
+        "zipcode": "asasd",
+        "description": "adasda",
+        "rooms": 45,
+        "bedrooms": 54,
+        "bathrooms": 4,
+        "rent": "5.00",
+        "available": true,
+        "sq_m": 4
+    },
+    {
+        "name": "asdasd",
+        "address": "asdasd",
+        "city": "asdasd",
+        "state": "asdasd",
+        "zipcode": "asasd",
+        "description": "adasda",
+        "rooms": 45,
+        "bedrooms": 54,
+        "bathrooms": 4,
+        "rent": "5.00",
+        "available": true,
+        "sq_m": 4
+    }
+]

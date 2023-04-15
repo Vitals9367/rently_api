@@ -1,0 +1,10 @@
+*~
+*.env
+# ignore .cache folder
+.pytest_cache
+__pycache__
+# ignore sonar cache
+.scannerwork
+docker-compose.yml
+Dockerfile
+env

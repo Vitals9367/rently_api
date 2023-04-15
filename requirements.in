@@ -1,0 +1,17 @@
+Django==4.1.5
+djangorestframework
+flake8
+django-cors-headers
+django-extensions
+psycopg2
+pip-tools
+python-dateutil
+pytest-django
+pytest-cov
+pytest-watch
+django-environ
+backports.zoneinfo==0.2.1;python_version<"3.9"
+djangorestframework-simplejwt
+django-filter
+flake8 
+flake8-django
