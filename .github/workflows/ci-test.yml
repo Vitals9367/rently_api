@@ -41,7 +41,7 @@
           - name: Test
             run: pytest --cov=. --cov-report=xml
             env:
-              DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres"
+              DATABASE_URL: "postgres://postgres:postgres@postgres:5432/postgres"
           - name: SonarCloud Scan
             uses: SonarSource/sonarcloud-github-action@master
             with:
