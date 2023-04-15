@@ -17,4 +17,6 @@ django-filter
 flake8 
 flake8-django
 uwsgi
-django-rest-framework-social-oauth2
+dj-rest-auth
+dj-rest-auth[with_social]
+django-allauth

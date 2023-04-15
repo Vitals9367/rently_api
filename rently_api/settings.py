@@ -27,6 +27,8 @@ env = Env(
     MEDIA_ROOT=(str, str(BASE_DIR / "media")),
     STATIC_URL=(str, "/static/"),
     MEDIA_URL=(str, "/media/"),
+    SOCIAL_AUTH_GITHUB_KEY=(str, "null"),
+    SOCIAL_AUTH_GITHUB_SECRET=(str, "null")
 )
 
 env_path = BASE_DIR / ".env"
@@ -41,6 +43,9 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 
 # Application definition
+SITE_ID = 1
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,11 +54,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_filters',
+
     'rest_framework',
-    'oauth2_provider',
-    'social_django',
     'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
+
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+
     'properties',
     'authentication',
 ]
@@ -66,6 +81,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'rently_api.urls'
@@ -105,12 +122,29 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.github.GithubOAuth2',
 )
 
-SOCIAL_AUTH_GITHUB_KEY = 'your_github_client_id'
-SOCIAL_AUTH_GITHUB_SECRET = 'your_github_client_secret'
-SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'rently-access',
+    'JWT_AUTH_REFRESH_COOKIE': 'rently-refresh',
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': env("SOCIAL_AUTH_GITHUB_KEY"),
+            'secret': env("SOCIAL_AUTH_GITHUB_SECRET"),
+            'key': ''
+        }
+    }
+}
+
+SOCIAL_AUTH_GITHUB_SCOPE = ['user', 'repo']
+
+# Redirect URLs for successful and failed authentication attempts
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
