@@ -11,8 +11,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE ${PORT}
+ENV STATIC_ROOT /srv/rently_api/static
+RUN mkdir -p $STATIC_ROOT
+RUN python manage.py collectstatic
 
 RUN chmod +x docker-entrypoint.sh
+EXPOSE ${PORT}
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
