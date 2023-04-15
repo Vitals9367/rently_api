@@ -96,6 +96,8 @@ tomli==2.0.1
     #   build
     #   coverage
     #   pytest
+uwsgi==2.0.21
+    # via -r requirements.in
 watchdog==3.0.0
     # via pytest-watch
 wheel==0.40.0
