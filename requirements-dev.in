@@ -10,7 +10,6 @@ pytest
 pytest-django
 pytest-cov
 pytest-watch
-tox
 django-environ
 backports.zoneinfo==0.2.1;python_version<"3.9"
 djangorestframework-simplejwt

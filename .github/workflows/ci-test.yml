@@ -37,7 +37,7 @@
             run: flake8
 
           - name: Test
-            run: tox -e py
+            run: pytest --cov=. --cov-report=xml
             env:
               DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres"
           - name: SonarCloud Scan
