@@ -52,7 +52,7 @@
             uses: SonarSource/sonarcloud-github-action@master
             with:
               args: >
-                -Dsonar.organization=my-${{ secrets.SONAR_ORGANIZATION}}
+                -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION}}
                 -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
                 -Dsonar.python.coverage.reportPaths=coverage.xml
                 -Dsonar.sources=.
