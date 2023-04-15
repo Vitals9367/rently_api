@@ -16,6 +16,8 @@
               POSTGRES_DB: postgres
               POSTGRES_USER: postgres
               POSTGRES_PASSWORD: postgres
+            ports:
+              - 5432:5432
             options: >-
               --health-cmd pg_isready
               --health-interval 10s
@@ -35,7 +37,7 @@
 
           - name: Lint
             run: flake8
-
+ 
           - name: Test
             run: pytest --cov=. --cov-report=xml
             env:
