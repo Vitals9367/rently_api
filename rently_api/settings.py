@@ -19,10 +19,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = Env(
     DEBUG=(bool, True),
-    SECRET_KEY=(str, ""),
-    ALLOWED_HOSTS=(list, []),
-    DATABASE_URL=(str, ""),
-    JWT_SECRET_KEY=(str, ""),
+    SECRET_KEY=(str, "secret"),
+    ALLOWED_HOSTS=(list, ["*"]),
+    DATABASE_URL=(str, "postgres://postgres:postgres@db:5432/postgres"),
+    JWT_SECRET_KEY=(str, "secret"),
     STATIC_ROOT=(str, str(BASE_DIR / "static")),
     MEDIA_ROOT=(str, str(BASE_DIR / "media")),
     STATIC_URL=(str, "/static/"),
