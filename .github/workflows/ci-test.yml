@@ -1,13 +1,13 @@
 ---
-    name: Lint, Test and SonarCloud scan
+    name: CI tests
     on:
         pull_request:
           types: [opened, synchronize, reopened]
           branches:
             - master
     jobs:
-      lint-test:
-        name: Lint, Test and SonarCloud scan
+      ci-test:
+        name: CI tests
         runs-on: ubuntu-20.04
         services:
           postgres:
