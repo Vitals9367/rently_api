@@ -16,3 +16,4 @@ djangorestframework-simplejwt
 django-filter
 flake8 
 flake8-django
+uwsgi
