@@ -1,8 +1,11 @@
 ---
     name: Checks
     
-    on: [push, pull_request]
-    
+    on:
+        pull_request:
+          branches:
+            - master
+
     jobs:
       lint-test:
         name: Lint and Test
