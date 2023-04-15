@@ -18,7 +18,7 @@ from environ import Env
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = Env(
-    DEBUG=(bool, "true"),
+    DEBUG=(bool, True),
     SECRET_KEY=(str, "secret"),
     ALLOWED_HOSTS=(list, ["*"]),
     DATABASE_URL=(str, "postgres://postgres:postgres@db:5432/postgres"),
@@ -84,9 +84,9 @@ TEMPLATES = [
     },
 ]
 
-RENDERER_CLASSES = ["rest_framework.renderers.JSONRenderer","rest_framework.renderers.BrowsableAPIRenderer"]
+RENDERER_CLASSES = ["rest_framework.renderers.JSONRenderer", "rest_framework.renderers.BrowsableAPIRenderer"]
 
-if DEBUG == False:
+if DEBUG is False:
     RENDERER_CLASSES.remove("rest_framework.renderers.BrowsableAPIRenderer")
 
 

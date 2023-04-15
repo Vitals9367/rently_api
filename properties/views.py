@@ -56,6 +56,9 @@ class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Property.objects.all()
     authentication_classes = [JWTAuthentication]
 
+    def get_empty_object(self):
+        return self.queryset.model()
+
     def destroy(self, request, *args, **kwargs):
         property = get_owned_property(self)
 

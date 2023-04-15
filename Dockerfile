@@ -2,7 +2,6 @@ FROM python:3.9-buster
 WORKDIR /rently_api
 
 ENV PORT=8000
-ENV DEBUG=False
 
 RUN apt-get update && \
     apt-get install -y uwsgi uwsgi-plugin-python3
