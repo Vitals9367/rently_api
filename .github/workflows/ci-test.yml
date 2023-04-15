@@ -9,13 +9,17 @@
       ci-test:
         name: CI tests
         runs-on: ubuntu-20.04
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         services:
           postgres:
             image: postgres:latest
             env:
-              POSTGRES_USER: postgres
-              POSTGRES_PASSWORD: postgres
-              POSTGRES_DB: test_db
+              POSTGRES_USER: ${{ env.POSTGRES_USER}}
+              POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD}}
+              POSTGRES_DB: ${{ env.POSTGRES_DB}}
             ports:
               - 5432:5432
             options: >-
@@ -44,7 +48,7 @@
           - name: Test
             run: pytest --cov=. --cov-report=xml
             env:
-              DATABASE_URL: "postgres://postgres:postgres@postgres:5432/postgres"
+              DATABASE_URL: "postgres://${{ env.POSTGRES_USER}}:${{ env.POSTGRES_PASSWORD}}@postgres:5432/${{ env.POSTGRES_DB}}"
           - name: SonarCloud Scan
             uses: SonarSource/sonarcloud-github-action@master
             with:
