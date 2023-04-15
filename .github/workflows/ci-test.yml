@@ -1,0 +1,53 @@
+---
+    name: Lint, Test and SonarCloud scan
+    on:
+        pull_request:
+          types: [opened, synchronize, reopened]
+          branches:
+            - master
+    jobs:
+      lint-test:
+        name: Lint, Test and SonarCloud scan
+        runs-on: ubuntu-20.04
+        services:
+          postgres:
+            image: postgres
+            env:
+              POSTGRES_DB: postgres
+              POSTGRES_USER: postgres
+              POSTGRES_PASSWORD: postgres
+            options: >-
+              --health-cmd pg_isready
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 5
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v2
+
+          - name: Setup Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: ${{ matrix.python }}
+
+          - name: Install packages
+            run: pip install -r requirements-dev.txt
+
+          - name: Lint
+            run: flake8
+
+          - name: Test
+            run: tox -e py
+            env:
+              DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres"
+          - name: SonarCloud Scan
+            uses: SonarSource/sonarcloud-github-action@master
+            with:
+              args: >
+                -Dsonar.organization=my-${{ secrets.SONAR_ORGANIZATION}}
+                -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+                -Dsonar.python.coverage.reportPaths=coverage.xml
+                -Dsonar.sources=.
+            env:
+              GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
