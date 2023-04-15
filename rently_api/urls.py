@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import re_path, include
 from django.http import HttpResponse
 
 
@@ -25,10 +25,10 @@ def readiness(*args, **kwargs):
 
 
 urlpatterns = [
-    path('api/v1/properties', include('properties.urls')),
-    path('api/token', include('jwt_auth.urls')),
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('healthz/', healthz),
-    path('readiness/', readiness),
+    re_path(r'^api/v1/', include('properties.urls')),
+    re_path(r'^api/auth/', include('authentication.urls')),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    re_path(r'^healthz', healthz),
+    re_path(r'^readiness', readiness),
 ]

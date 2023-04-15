@@ -9,33 +9,31 @@ test_properties = get_test_resource('properties')
 
 
 @mark.django_db
-def test_get_properties(client, user):
-    url = reverse('property-list')
-
-    response = client.get(url)
+def test_get_properties(client, test_user):
+    url = reverse('properties-list')
 
     # No properties first
+    response = client.get(url)
     assert response.data == []
     assert response.status_code == status.HTTP_200_OK
 
     # Create some properties
-    property1 = Property.objects.create(**test_properties[0], owner=user)
-    property2 = Property.objects.create(**test_properties[1], owner=user)
-    serializer = PropertySerializer([property1, property2], many=True)
-
-    response = client.get(url)
+    properties = [Property.objects.create(**prop, owner=test_user) for prop in test_properties]
+    serializer = PropertySerializer(properties, many=True)
 
     # Newly created properties returned
+    response = client.get(url)
     assert response.data == serializer.data
     assert response.status_code == status.HTTP_200_OK
 
 
 @mark.django_db
-def test_get_properties_details(client, user):
+def test_get_property_details(client, test_user):
+    property_data = test_properties[0].copy()
+    property_data['owner'] = test_user
+    property = Property.objects.create(**property_data)
 
-    property = Property(**test_properties[0], owner=user)
-
-    url = reverse('property-detail-view', kwargs={'id': property.id})
+    url = reverse('properties-detail', kwargs={'pk': 'some-random-idasdasdasdasdasd'})
 
     response = client.get(url)
 
@@ -43,12 +41,10 @@ def test_get_properties_details(client, user):
     assert response.data == {"detail": "Not found."}
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
-    # Create property
-    property.save()
-    serializer = PropertySerializer(property)
-
+    # Get property details
+    url = reverse('properties-detail', kwargs={'pk': str(property.id)})
     response = client.get(url)
 
     # Newly created property returned
-    assert response.data == serializer.data
+    assert response.data == PropertySerializer(property).data
     assert response.status_code == status.HTTP_200_OK
