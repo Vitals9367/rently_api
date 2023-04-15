@@ -22,7 +22,11 @@ env = Env(
     SECRET_KEY=(str, ""),
     ALLOWED_HOSTS=(list, []),
     DATABASE_URL=(str, ""),
-    JWT_SECRET_KEY=(str, "")
+    JWT_SECRET_KEY=(str, ""),
+    STATIC_ROOT=(str, str(BASE_DIR / "static")),
+    MEDIA_ROOT=(str, str(BASE_DIR / "media")),
+    STATIC_URL=(str, "/static/"),
+    MEDIA_URL=(str, "/media/"),
 )
 
 env_path = BASE_DIR / ".env"
@@ -177,7 +181,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# Static & Media files
+STATIC_ROOT = env("STATIC_ROOT")
+STATIC_URL = env("STATIC_URL")
+MEDIA_ROOT = env("MEDIA_ROOT")
+MEDIA_URL = env("MEDIA_URL")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
